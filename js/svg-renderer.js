@@ -13,6 +13,13 @@
   }
 }( this, function factory() {
 
+let fov = window && window.fov;
+if (fov) {
+  function scale(z) {return fov/(fov+z)};
+} else {
+  function scale(z) {return 1};
+}
+
 var SvgRenderer = { isSvg: true };
 
 // round path coordinates to 3 decimals
@@ -27,14 +34,19 @@ function getPointString( point ) {
 SvgRenderer.begin = function() {};
 
 SvgRenderer.move = function( svg, elem, point ) {
+  point.z = scale(point.z)
   return 'M' + getPointString( point );
 };
 
 SvgRenderer.line = function( svg, elem, point ) {
+  point.z = scale(point.z)
   return 'L' + getPointString( point );
 };
 
 SvgRenderer.bezier = function( svg, elem, cp0, cp1, end ) {
+  cp0.z = scale(cp0.z)
+  cp1.z = scale(cp1.z)
+  end.z = scale(end.z)
   return 'C' + getPointString( cp0 ) + getPointString( cp1 ) +
     getPointString( end );
 };
