@@ -13,11 +13,10 @@
   }
 }( this, function factory() {
 
-let fov = window && window.fov;
-if (fov) {
-  function scale(z) {return fov/(fov+z)};
-} else {
-  function scale(z) {return 1};
+console.log("fov", window && window.fov)
+const scale = z => {
+  const fov = window && window.fov
+  return fov ? fov / (fov + z) : 1
 }
 
 var SvgRenderer = { isSvg: true };
@@ -34,12 +33,16 @@ function getPointString( point ) {
 SvgRenderer.begin = function() {};
 
 SvgRenderer.move = function( svg, elem, point ) {
-  point.z = scale(point.z)
+  const s = scale(point.z)
+  point.x = point.x * s
+  point.y = point.y * s
   return 'M' + getPointString( point );
 };
 
 SvgRenderer.line = function( svg, elem, point ) {
-  point.z = scale(point.z)
+  const s = scale(point.z)
+  point.x = point.x * s
+  point.y = point.y * s
   return 'L' + getPointString( point );
 };
 
